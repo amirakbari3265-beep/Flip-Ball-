@@ -24,24 +24,29 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
-        with:
-          packages: |
-            platform-tools
-            platforms;android-35
-            build-tools;35.0.0
+
+      - name: Accept Android Licenses
+        run: |
+          yes | sdkmanager --licenses || true
+
+      - name: Install Android SDK 35
+        run: |
+          sdkmanager --sdk_root="$ANDROID_HOME" --install \
+            "platform-tools" \
+            "platforms;android-35" \
+            "build-tools;35.0.0"
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.7'
 
-      - name: Check project files
+      - name: Check Project
         run: |
-          ls -la
           ls -la FlipBall
           test -f FlipBall/settings.gradle || test -f FlipBall/settings.gradle.kts
 
-      - name: Build Debug APK
+      - name: Build APK
         working-directory: FlipBall
         run: gradle :app:assembleDebug --no-daemon
 
