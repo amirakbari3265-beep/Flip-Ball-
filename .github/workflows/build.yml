@@ -22,12 +22,14 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Check Android SDK
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          sdkmanager --version
 
       - name: Accept Android Licenses
         run: |
-          yes | sdkmanager --licenses || true
+          yes | sdkmanager --licenses
 
       - name: Install Android SDK 35
         run: |
@@ -46,7 +48,7 @@ jobs:
           ls -la FlipBall
           test -f FlipBall/settings.gradle || test -f FlipBall/settings.gradle.kts
 
-      - name: Build APK
+      - name: Build FlipBall APK
         working-directory: FlipBall
         run: gradle :app:assembleDebug --no-daemon
 
